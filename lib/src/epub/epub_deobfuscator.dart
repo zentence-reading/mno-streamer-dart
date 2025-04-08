@@ -2,11 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:dartx/dartx.dart';
-import 'package:mno_commons/extensions/strings.dart';
+import 'package:crypto/crypto.dart';
+import 'package:convert/convert.dart';
 import 'package:mno_shared/fetcher.dart';
 
 class EpubDeobfuscator {
@@ -40,11 +42,19 @@ class DeobfuscatingResource extends ProxyResource {
       int obfuscationLength = _algorithm2length[algorithm]!;
       ByteData obfuscationKey;
       switch (algorithm) {
+        case "http://www.idpf.org/2008/embedding":
+          var bytes = utf8.encode(pubId);
+          var digest = sha1.convert(bytes);
+          obfuscationKey =
+              ByteData.view(Uint8List.fromList(digest.bytes).buffer);
+          break;
         case "http://ns.adobe.com/pdf/enc#RC":
-          obfuscationKey = _getHashKeyAdobe(pubId);
+          String adobeKeyString = _getHashKeyAdobe(pubId);
+          List<int> keyBytes = hex.decode(adobeKeyString);
+          obfuscationKey = ByteData.view(Uint8List.fromList(keyBytes).buffer);
           break;
         default:
-          obfuscationKey = pubId.sha1.toByteData();
+          throw Exception("Unknown algorithm: $algorithm");
       }
 
       _deobfuscate(it, range, obfuscationKey, obfuscationLength);
@@ -69,6 +79,6 @@ class DeobfuscatingResource extends ProxyResource {
     }
   }
 
-  ByteData _getHashKeyAdobe(String pubId) =>
-      pubId.replaceFirst("urn:uuid:", "").replaceAll("-", "").toByteData();
+  String _getHashKeyAdobe(String pubId) =>
+      pubId.replaceFirst("urn:uuid:", "").replaceAll("-", "");
 }

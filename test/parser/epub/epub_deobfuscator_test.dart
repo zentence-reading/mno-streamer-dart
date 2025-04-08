@@ -33,7 +33,6 @@ Future<void> main() async {
     return transformer.transform(obfuscatedRes);
   }
 
-  ///TODO this test is falling. Debugging is needed
   test("testIdpfDeobfuscation", () async {
     var deobfuscatedRes = (await deobfuscate("/deobfuscation/cut-cut.obf.woff",
                 "http://www.idpf.org/2008/embedding")
