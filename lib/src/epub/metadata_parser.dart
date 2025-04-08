@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:dartx/dartx.dart' hide IterableGroupBy;
+import 'package:dartx/dartx.dart' hide IterableGroupBy, NullableStringIsNullOrBlankExtension;
 import 'package:dfunc/dfunc.dart';
 import 'package:mno_commons/extensions/strings.dart';
 import 'package:mno_commons/utils/href.dart';

@@ -14,8 +14,12 @@ dependencies:
   path: ^1.8.0
   universal_io: ^2.0.4
   xml: ^5.3.1
-  mno_commons: ^0.1.2
-  mno_shared: ^0.1.2
+  mno_commons:
+    git:
+      url: https://github.com/zentence-reading/mno_commons_dart.git
+  mno_shared:
+    git:
+      url: https://github.com/zentence-reading/mno_shared_dart.git
 
 dev_dependencies:
   lints: ^1.0.1
