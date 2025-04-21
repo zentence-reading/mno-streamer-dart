@@ -38,29 +38,31 @@ class EncryptionParser {
     if (algorithm == null) {
       return null;
     }
-    Product2<int, String>? compression = node
+    (int, String)? compression = node
         .getElement("EncryptionProperties", namespace: Namespaces.enc)
         ?.let(_parseEncryptionProperties);
-    int? originalLength = compression?.item1;
-    String? compressionMethod = compression?.item2;
+    int? originalLength = compression?.$1;
+    String? compressionMethod = compression?.$2;
+
     Encryption enc = Encryption(
         scheme: scheme,
-        /* profile: drm?.license?.encryptionProfile,
-            FIXME: This has probably never worked. Profile needs to be filled somewhere, though. */
+        // ignore: fixme
+        // FIXME: This has probably never worked. Profile needs to be filled somewhere, though.
+        // profile: drm?.license?.encryptionProfile
         algorithm: algorithm,
         compression: compressionMethod,
         originalLength: originalLength);
     return MapEntry(Href(resourceURI).string, enc);
   }
 
-  static Product2<int, String>? _parseEncryptionProperties(
+  static (int, String)? _parseEncryptionProperties(
       XmlElement encryptionProperties) {
     for (XmlElement encryptionProperty in encryptionProperties
         .findElements("EncryptionProperty", namespace: Namespaces.enc)) {
       XmlElement? compressionElement = encryptionProperty
           .getElement("Compression", namespace: Namespaces.comp);
       if (compressionElement != null) {
-        Product2<int, String>? compression =
+        (int, String)? compression =
             _parseCompressionElement(compressionElement);
         if (compression != null) {
           return compression;
@@ -70,7 +72,7 @@ class EncryptionParser {
     return null;
   }
 
-  static Product2<int, String>? _parseCompressionElement(
+  static (int, String)? _parseCompressionElement(
       XmlElement compressionElement) {
     int? originalLength =
         compressionElement.getAttribute("OriginalLength")?.toIntOrNull();
@@ -82,6 +84,6 @@ class EncryptionParser {
       return null;
     }
     String compression = (method == "8") ? "deflate" : "none";
-    return Product2(originalLength, compression);
+    return (originalLength, compression);
   }
 }

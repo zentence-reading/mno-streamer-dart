@@ -2,7 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:dartx/dartx.dart' hide IterableGroupBy, NullableStringIsNullOrBlankExtension;
+import 'package:dartx/dartx.dart'
+    hide IterableGroupBy, NullableStringIsNullOrBlankExtension;
 import 'package:dfunc/dfunc.dart';
 import 'package:mno_commons/extensions/strings.dart';
 import 'package:mno_commons/utils/href.dart';
@@ -53,10 +54,10 @@ class MetadataParser {
     if (metadata == null) {
       return null;
     }
-    Product2<List<_MetadataItem>, List<EpubLink>> elements =
+    (List<_MetadataItem>, List<EpubLink>) elements =
         _parseElements(metadata, filePath);
-    List<_MetadataItem> metas = elements.item1;
-    List<EpubLink> links = elements.item2;
+    List<_MetadataItem> metas = elements.$1;
+    List<EpubLink> links = elements.$2;
     List<_MetadataItem> metaHierarchy = _resolveMetaHierarchy(metas);
     List<List<_MetadataItem>> partitions =
         metaHierarchy.partition((it) => it.refines.isNullOrBlank);
@@ -70,7 +71,7 @@ class MetadataParser {
     return EpubMetadata(globalCollection, refineCollections, links);
   }
 
-  Product2<List<_MetadataItem>, List<EpubLink>> _parseElements(
+  (List<_MetadataItem>, List<EpubLink>) _parseElements(
       XmlElement metadataElement, String filePath) {
     List<_MetadataItem> metas = [];
     List<EpubLink> links = [];
@@ -91,7 +92,7 @@ class MetadataParser {
         });
       }
     }
-    return Product2(metas, links);
+    return (metas, links);
   }
 
   EpubLink? _parseLinkElement(XmlElement element, String filePath) {
@@ -289,18 +290,17 @@ class PubMetadataAdapter extends MetadataAdapter {
         firstValue("calibre:title_sort")
             ?.let((it) => LocalizedString.fromString(it));
 
-    Iterable<Product2<String?, Collection>> allCollections =
+    Iterable<(String?, Collection)> allCollections =
         (items[Vocabularies.meta + "belongs-to-collection"] ?? [])
             .map((it) => it.toCollection());
-    List<List<Product2<String?, Collection>>> collectionsPartitions =
-        allCollections.partition((it) => it.item1 == "series");
-    List<Product2<String?, Collection>> seriesMeta = collectionsPartitions[0];
-    List<Product2<String?, Collection>> collectionsMeta =
-        collectionsPartitions[1];
-    belongsToCollections = collectionsMeta.map((it) => it.item2).toList();
+    List<List<(String?, Collection)>> collectionsPartitions =
+        allCollections.partition((it) => it.$1 == "series");
+    List<(String?, Collection)> seriesMeta = collectionsPartitions[0];
+    List<(String?, Collection)> collectionsMeta = collectionsPartitions[1];
+    belongsToCollections = collectionsMeta.map((it) => it.$2).toList();
 
     if (seriesMeta.isNotEmpty) {
-      belongsToSeries = seriesMeta.map((it) => it.item2).toList();
+      belongsToSeries = seriesMeta.map((it) => it.$2).toList();
     } else {
       belongsToSeries = items["calibre:series"]?.firstOrNull?.let((it) {
             LocalizedString name =
@@ -332,9 +332,8 @@ class PubMetadataAdapter extends MetadataAdapter {
             (items[Vocabularies.media + "narrator"] ?? []);
     allContributors = contributors
         .map((it) => it.toContributor())
-        .groupBy((it) => it.item1)
-        .map((key, value) =>
-            MapEntry(key, value.map((it) => it.item2).toList()));
+        .groupBy((it) => it.$1)
+        .map((key, value) => MapEntry(key, value.map((it) => it.$2).toList()));
   }
 
   Metadata metadata() => Metadata(
@@ -416,22 +415,22 @@ class PubMetadataAdapter extends MetadataAdapter {
       layoutProp = firstValue(Vocabularies.rendition + "layout");
     }
 
-    Product2<PresentationOverflow, bool> scrollInfos;
+    (PresentationOverflow, bool) scrollInfos;
     switch (flowProp) {
       case "paginated":
-        scrollInfos = Product2(PresentationOverflow.paginated, false);
+        scrollInfos = (PresentationOverflow.paginated, false);
         break;
       case "scrolled-continuous":
-        scrollInfos = Product2(PresentationOverflow.scrolled, true);
+        scrollInfos = (PresentationOverflow.scrolled, true);
         break;
       case "scrolled-doc":
-        scrollInfos = Product2(PresentationOverflow.scrolled, false);
+        scrollInfos = (PresentationOverflow.scrolled, false);
         break;
       default:
-        scrollInfos = Product2(PresentationOverflow.auto, false);
+        scrollInfos = (PresentationOverflow.auto, false);
     }
-    PresentationOverflow overflow = scrollInfos.item1;
-    bool continuous = scrollInfos.item2;
+    PresentationOverflow overflow = scrollInfos.$1;
+    bool continuous = scrollInfos.$2;
 
     EpubLayout layout;
     switch (layoutProp) {
@@ -555,7 +554,7 @@ class _MetadataItem {
     assert(property == Vocabularies.dcterms + "subject");
     LocalizedString values = localizedString();
     LocalizedString? localizedSortAs =
-        fileAs?.let((it) => LocalizedString.fromStrings({it.item1: it.item2}));
+        fileAs?.let((it) => LocalizedString.fromStrings({it.$1: it.$2}));
     return Subject(
         localizedName: values,
         localizedSortAs: localizedSortAs,
@@ -567,11 +566,11 @@ class _MetadataItem {
     assert(property == Vocabularies.dcterms + "title");
     LocalizedString values = localizedString();
     LocalizedString? localizedSortAs =
-        fileAs?.let((it) => LocalizedString.fromStrings({it.item1: it.item2}));
+        fileAs?.let((it) => LocalizedString.fromStrings({it.$1: it.$2}));
     return Title(values, localizedSortAs, titleType, displaySeq);
   }
 
-  Product2<String?, Contributor> toContributor() {
+  (String?, Contributor) toContributor() {
     assert(contributorProperties.contains(property));
     Set<String> knownRoles = {
       "aut",
@@ -585,7 +584,7 @@ class _MetadataItem {
     };
     LocalizedString names = localizedString();
     LocalizedString? localizedSortAs =
-        fileAs?.let((it) => LocalizedString.fromStrings({it.item1: it.item2}));
+        fileAs?.let((it) => LocalizedString.fromStrings({it.$1: it.$2}));
     Set<String> roles =
         role.takeUnless((it) => knownRoles.contains(it))?.let((it) => {it}) ??
             {};
@@ -603,9 +602,8 @@ class _MetadataItem {
       case Vocabularies.media + "narrator":
         type = "nrt";
         break;
-      default:
-        type = role.takeIf((it) =>
-            knownRoles.contains(it)); // Vocabularies.DCTERMS + "contributor"
+      default: // Vocabularies.DCTERMS + "contributor"
+        type = role.takeIf((it) => knownRoles.contains(it));
     }
     Contributor contributor = Contributor(
         localizedName: names,
@@ -614,11 +612,11 @@ class _MetadataItem {
         identifier: identifier,
         position: groupPosition);
 
-    return Product2(type, contributor);
+    return (type, contributor);
   }
 
-  Product2<String?, Collection> toCollection() =>
-      toContributor().let((t) => Product2(t.item1, t.item2.toCollection()));
+  (String?, Collection) toCollection() =>
+      toContributor().let((t) => (t.$1, t.$2.toCollection()));
 
   dynamic toMap() {
     if (children.isEmpty) {
@@ -632,9 +630,9 @@ class _MetadataItem {
     }
   }
 
-  Product2<String?, String>? get fileAs =>
-      children[Vocabularies.meta + "file-as"]?.firstOrNull?.let(
-          (it) => Product2(it.lang.takeUnless((it) => it == ""), it.value));
+  (String?, String)? get fileAs => children[Vocabularies.meta + "file-as"]
+      ?.firstOrNull
+      ?.let((it) => (it.lang.takeUnless((it) => it == ""), it.value));
 
   String? get titleType => firstValue(Vocabularies.meta + "title-type");
 
