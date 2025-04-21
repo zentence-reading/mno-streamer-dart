@@ -1,5 +1,8 @@
 # mno_streamer
 
+[![Dart CI](https://github.com/zentence-reading/mno_streamer_dart/actions/workflows/ci.yml/badge.svg)](https://github.com/zentence-reading/mno_streamer_dart/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/zentence-reading/mno_streamer_dart/graph/badge.svg?token=T8JGHHTINW)](https://codecov.io/gh/zentence-reading/mno_streamer_dart)
+
 Streamer API and multiple file parsers (PDF, CBZ, Epub) for Dart. This code is inspired by [Readium 2](https://readium.org/technical/r2-toc/) Streamer ([Kotlin](https://github.com/readium/r2-streamer-kotlin), [Swift](https://github.com/readium/r2-streamer-kotlin), [Swift](https://github.com/readium/r2-streamer-swift) and [NodeJS/TypeScript](https://github.com/readium/r2-streamer-js)).
 In contrast with Readium 2 Streamer, the server part is separate, in [mno_server_dart](https://github.com/Mantano/mno_server_dart)
 
