@@ -49,6 +49,7 @@ class PdfParser extends PublicationParser implements StreamPublicationParser {
     PdfDocument document = await pdfFactory.openResource(fetcher.get(pdfLink));
     String title = document.title?.ifBlank(() => null) ?? fallbackTitle;
 
+    // ignore: todo
     // TODO implement lookup the table of content
     // List<Link> tableOfContents = document.outline.toLinks(fileHref);
 

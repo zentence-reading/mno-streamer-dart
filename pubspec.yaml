@@ -21,6 +21,8 @@ dependencies:
   mno_shared:
     git:
       url: https://github.com/zentence-reading/mno_shared_dart.git
+  convert: ^3.1.2
+  crypto: ^3.0.6
 
 dev_dependencies:
   coverage: ^1.12.0

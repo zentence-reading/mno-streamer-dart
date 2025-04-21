@@ -101,15 +101,15 @@ class EpubParser extends PublicationParser implements StreamPublicationParser {
             displayOptions: await _parseDisplayOptions(fetcher))
         .create();
 
-    Fetcher _fetcher = fetcher;
+    Fetcher fetcherToUse = fetcher;
     manifest.metadata.identifier?.let((it) {
-      _fetcher =
+      fetcherToUse =
           TransformingFetcher.single(fetcher, EpubDeobfuscator(it).transform);
     });
 
     return PublicationBuilder(
         manifest: manifest,
-        fetcher: _fetcher,
+        fetcher: fetcherToUse,
         servicesBuilder:
             ServicesBuilder.create(positions: EpubPositionsService.create));
   }
@@ -181,7 +181,7 @@ class EpubParser extends PublicationParser implements StreamPublicationParser {
           {};
     } else {
       Item? navItem = packageDocument.manifest.firstOrNullWhere(
-          (it) => it.properties.contains(Vocabularies.item + "nav"));
+          (it) => it.properties.contains("${Vocabularies.item}nav"));
       return await navItem?.let((it) async {
             String navPath =
                 Href(navItem.href, baseHref: packageDocument.path).string;
@@ -204,7 +204,7 @@ class EpubParser extends PublicationParser implements StreamPublicationParser {
             ?.findElements("option", namespace: "")
             .map((element) {
               String? optName = element.getAttribute("name");
-              String optVal = element.text;
+              String optVal = element.innerText;
               return (optName != null) ? MapEntry(optName, optVal) : null;
             })
             .whereNotNull()

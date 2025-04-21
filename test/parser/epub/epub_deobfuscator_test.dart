@@ -41,7 +41,6 @@ Future<void> main() async {
     expect(deobfuscatedRes.buffer.asUint8List(), font.buffer.asUint8List());
   });
 
-  ///TODO this test is falling. Debugging is needed
   test("testAdobeDeobfuscation", () async {
     var deobfuscatedRes = (await deobfuscate("/deobfuscation/cut-cut.adb.woff",
                 "http://ns.adobe.com/pdf/enc#RC")

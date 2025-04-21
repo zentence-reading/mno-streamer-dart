@@ -31,31 +31,41 @@ class ContainerError implements Exception {
   /// File error.
   ContainerError.fileError();
 
-  /// Missing file.
-  static _MissingFile missingFile(String path) => _MissingFile(path);
+  /// Creates an error for a missing file.
+  static MissingFileError missingFile(String path) => MissingFileError(path);
 
-  /// Error parsing XML.
-  static _XmlParse xmlParse(Error underlyingError) =>
-      _XmlParse(underlyingError);
+  /// Creates an error for XML parsing issues.
+  static XmlParseError xmlParse(Error underlyingError) =>
+      XmlParseError(underlyingError);
 
-  /// Missing link.
-  static _MissingLink missingLink(String title) => _MissingLink(title);
+  /// Creates an error for a missing link.
+  static MissingLinkError missingLink(String title) => MissingLinkError(title);
 }
 
-class _MissingFile extends ContainerError {
+// Make the specific error classes public
+class MissingFileError extends ContainerError {
   final String path;
 
-  _MissingFile(this.path) : super._();
+  MissingFileError(this.path) : super._();
+
+  @override
+  String toString() => 'Missing file at path: $path';
 }
 
-class _XmlParse extends ContainerError {
+class XmlParseError extends ContainerError {
   final Error underlyingError;
 
-  _XmlParse(this.underlyingError) : super._();
+  XmlParseError(this.underlyingError) : super._();
+
+  @override
+  String toString() => 'Error parsing XML: $underlyingError';
 }
 
-class _MissingLink extends ContainerError {
+class MissingLinkError extends ContainerError {
   final String title;
 
-  _MissingLink(this.title) : super._();
+  MissingLinkError(this.title) : super._();
+
+  @override
+  String toString() => 'Missing link with title: $title';
 }

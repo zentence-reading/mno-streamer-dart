@@ -86,7 +86,7 @@ class NavigationDocumentParser {
     }
     String title = (first.name.local == "ol")
         ? ""
-        : first.text.replaceAll(RegExp("\\s+"), " ").trim();
+        : first.innerText.replaceAll(RegExp("\\s+"), " ").trim();
     String? rawHref = first.getAttribute("href");
     String href = (first.name.local == "a" && !rawHref.isNullOrBlank)
         ? Href(rawHref!, baseHref: filePath).string

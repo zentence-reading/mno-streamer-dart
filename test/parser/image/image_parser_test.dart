@@ -12,7 +12,7 @@ import 'package:universal_io/io.dart';
 
 Future<void> main() async {
   PublicationAsset assetForResource(String resource) {
-    String path = "test_resources/image/" + resource;
+    String path = "test_resources/image/$resource";
     return FileAsset(File(path));
   }
 

@@ -30,7 +30,7 @@ abstract class StreamPublicationParser {
   /// This can be used to:
   /// - support content protection technologies
   /// - parse exploded archives or in archiving formats unknown to the parser, e.g. RAR
-  /// If the file is not an archive, it will be reachable at the HREF /<file.name>,
+  /// If the file is not an archive, it will be reachable at the HREF /`<file.name>`,
   /// e.g. with a PDF.
   /// @param warnings Used to report non-fatal parsing warnings, such as publication authoring
   /// mistakes. This is useful to warn users of potential rendering issues or help authors

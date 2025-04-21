@@ -27,7 +27,7 @@ class DeobfuscatingResource extends ProxyResource {
   };
   final String pubId;
 
-  DeobfuscatingResource(Resource resource, this.pubId) : super(resource);
+  DeobfuscatingResource(super.resource, this.pubId);
 
   @override
   Future<ResourceTry<ByteData>> read({IntRange? range}) async {

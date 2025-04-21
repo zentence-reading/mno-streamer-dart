@@ -58,7 +58,7 @@ class NcxParser {
   static String? _extractTitle(XmlElement element) => element
       .getElement("navLabel", namespace: Namespaces.ncx)
       ?.getElement("text", namespace: Namespaces.ncx)
-      ?.text
+      ?.innerText
       .replaceAll(RegExp("\\s+"), " ")
       .trim()
       .ifBlank(() => null);
